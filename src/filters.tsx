@@ -4,6 +4,7 @@ import {
   FINISH_LINES, FINISH_LINE_COLORS, isOutlier,
   fmtInt,
 } from './utils.tsx';
+import { useLocale } from './i18n.tsx';
 
 export interface Filters {
   sectors: Set<string>;
@@ -68,6 +69,7 @@ interface FilterRailProps {
 }
 
 export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailProps) {
+  const { t } = useLocale();
   const [showMore, setShowMore] = useState(false);
 
   const update = (fn: (next: Filters) => void) => setFilters(prev => {
@@ -113,9 +115,9 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
     filters.finishLines.size > 0 || filters.climateOnly || !filters.hideFlagged;
 
   return (
-    <div className="filter-rail" role="region" aria-label="Filters">
+    <div className="filter-rail" role="region" aria-label={t('filters.eyebrow')}>
       <div className="group span-6">
-        <div className="glabel">Sector</div>
+        <div className="glabel">{t('filters.sector')}</div>
         <div className="chip-row">
           {sectors.map(([s, count]) => (
             <button key={s} className={`chip ${filters.sectors.has(s) ? 'active' : ''}`}
@@ -127,9 +129,9 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
       </div>
 
       <div className="group span-6">
-        <div className="glabel">Search</div>
+        <div className="glabel">{t('filters.search')}</div>
         <input className="type-input" type="text"
-               placeholder="Search projects, offices…"
+               placeholder={t('filters.searchPlaceholder')}
                value={filters.unitQuery}
                onChange={(e) => update(n => { n.unitQuery = e.target.value; })} />
         {filteredUnits.length > 0 && (
@@ -156,7 +158,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
       <div className="group span-12">
         <button className="more-filters-toggle" onClick={() => setShowMore(!showMore)}
                 aria-expanded={showMore}>
-          {showMore ? 'Fewer filters' : 'More filters'}{hasAdvancedFilters && !showMore ? ' (active)' : ''}
+          {showMore ? t('filters.fewer') : t('filters.more')}{hasAdvancedFilters && !showMore ? ` (${t('filters.active')})` : ''}
           <span className={`chevron ${showMore ? 'open' : ''}`}>&#9662;</span>
         </button>
       </div>
@@ -164,7 +166,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
       {showMore && (
         <>
           <div className="group span-4">
-            <div className="glabel">Funding Source</div>
+            <div className="glabel">{t('filters.fundingSource')}</div>
             <div className="chip-row">
               {fundingSources.map(([f, count]) => (
                 <button key={f} className={`chip ${filters.fundingSources.has(f) ? 'active' : ''}`}
@@ -176,7 +178,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
           </div>
 
           <div className="group span-4">
-            <div className="glabel">Subcategory</div>
+            <div className="glabel">{t('filters.subcategory')}</div>
             <div className="chip-row">
               {subs.map(([s, count]) => (
                 <button key={s} className={`chip ${filters.subcategories.has(s) ? 'active' : ''}`}
@@ -188,7 +190,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
           </div>
 
           <div className="group span-4">
-            <div className="glabel">2028 Finish-Line Cluster</div>
+            <div className="glabel">{t('filters.finishLine')}</div>
             <div className="chip-row">
               {fls.map(fl => (
                 <button key={fl} className={`chip ${filters.finishLines.has(fl) ? 'active' : ''}`}
@@ -201,7 +203,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
           </div>
 
           <div className="group span-12">
-            <div className="glabel">Options</div>
+            <div className="glabel">{t('filters.options')}</div>
             <div className="switch-row">
               <label className="switch-label">
                 <span className={`switch ${filters.climateOnly ? 'on' : ''}`}
@@ -211,7 +213,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); update(n => { n.climateOnly = !n.climateOnly; }); } }}>
                   <span className="switch-thumb" />
                 </span>
-                Climate projects only
+                {t('filters.climateOnly')}
               </label>
               <label className="switch-label">
                 <span className={`switch ${filters.hideFlagged ? 'on' : ''}`}
@@ -221,7 +223,7 @@ export function FilterRail({ items, filters, setFilters, allUnits }: FilterRailP
                       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); update(n => { n.hideFlagged = !n.hideFlagged; }); } }}>
                   <span className="switch-thumb" />
                 </span>
-                Hide flagged items
+                {t('filters.hideFlagged')}
               </label>
             </div>
           </div>
@@ -239,6 +241,7 @@ interface BreadcrumbProps {
 }
 
 export function Breadcrumb({ filters, setFilters, filteredCount, totalCount }: BreadcrumbProps) {
+  const { t } = useLocale();
   const crumbs: { label: string; remove: () => void }[] = [];
   const update = (fn: (next: Filters) => void) => setFilters(prev => {
     const next: Filters = { ...prev,
@@ -252,13 +255,13 @@ export function Breadcrumb({ filters, setFilters, filteredCount, totalCount }: B
     return next;
   });
 
-  filters.sectors.forEach(s => crumbs.push({ label: `Sector: ${shortSector(s)}`, remove: () => update(n => n.sectors.delete(s)) }));
-  filters.units.forEach(u => crumbs.push({ label: `Office: ${u}`, remove: () => update(n => n.units.delete(u)) }));
-  filters.fundingSources.forEach(f => crumbs.push({ label: `Source: ${f}`, remove: () => update(n => n.fundingSources.delete(f)) }));
+  filters.sectors.forEach(s => crumbs.push({ label: `${t('crumb.sector')}: ${shortSector(s)}`, remove: () => update(n => n.sectors.delete(s)) }));
+  filters.units.forEach(u => crumbs.push({ label: `${t('crumb.office')}: ${u}`, remove: () => update(n => n.units.delete(u)) }));
+  filters.fundingSources.forEach(f => crumbs.push({ label: `${t('crumb.source')}: ${f}`, remove: () => update(n => n.fundingSources.delete(f)) }));
   filters.subcategories.forEach(s => crumbs.push({ label: `${s}`, remove: () => update(n => n.subcategories.delete(s)) }));
-  filters.finishLines.forEach(fl => crumbs.push({ label: `Cluster: ${shortFL(fl)}`, remove: () => update(n => n.finishLines.delete(fl)) }));
-  if (filters.climateOnly) crumbs.push({ label: 'Climate projects only', remove: () => update(n => { n.climateOnly = false; }) });
-  if (filters.hideFlagged === false) crumbs.push({ label: 'Flagged items shown', remove: () => update(n => { n.hideFlagged = true; }) });
+  filters.finishLines.forEach(fl => crumbs.push({ label: `${t('crumb.cluster')}: ${shortFL(fl)}`, remove: () => update(n => n.finishLines.delete(fl)) }));
+  if (filters.climateOnly) crumbs.push({ label: t('crumb.climateOnly'), remove: () => update(n => { n.climateOnly = false; }) });
+  if (filters.hideFlagged === false) crumbs.push({ label: t('crumb.flaggedShown'), remove: () => update(n => { n.hideFlagged = true; }) });
   if (filters.search) crumbs.push({ label: `"${filters.search}"`, remove: () => update(n => { n.search = ''; }) });
 
   const clearAll = () => setFilters({ ...initialFilters,
@@ -268,10 +271,10 @@ export function Breadcrumb({ filters, setFilters, filteredCount, totalCount }: B
   return (
     <div className="breadcrumb" aria-live="polite">
       <span style={{fontFamily:'JetBrains Mono, monospace', fontSize: 11, color: 'var(--ink-3)', marginRight: 4}}>
-        {fmtInt(filteredCount)} of {fmtInt(totalCount)} projects
+        {fmtInt(filteredCount)} {t('filters.of')} {fmtInt(totalCount)} {t('filters.projects')}
       </span>
       {crumbs.length === 0 ? (
-        <span className="none">Showing all {fmtInt(totalCount)} projects</span>
+        <span className="none">{t('filters.showingAll')} {fmtInt(totalCount)} {t('filters.projects')}</span>
       ) : (
         <>
           {crumbs.map((c, i) => (
@@ -280,7 +283,7 @@ export function Breadcrumb({ filters, setFilters, filteredCount, totalCount }: B
               <span className="x" onClick={c.remove} role="button" aria-label={`Remove ${c.label}`}>×</span>
             </span>
           ))}
-          <span className="clear" onClick={clearAll} role="button">clear all</span>
+          <span className="clear" onClick={clearAll} role="button">{t('filters.clearAll')}</span>
         </>
       )}
     </div>

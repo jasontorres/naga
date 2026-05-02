@@ -6,6 +6,7 @@ import {
   shortFL,
   FINISH_LINES, FINISH_LINE_COLORS,
 } from './utils.tsx';
+import { useLocale } from './i18n.tsx';
 
 function useReveal(threshold = 0.15) {
   const ref = useRef<HTMLDivElement>(null);
@@ -179,6 +180,7 @@ interface LandingProps {
 }
 
 export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingProps) {
+  const { t } = useLocale();
   const climateSpend = rollupAll.cc_adapt + rollupAll.cc_mitig;
   const climatePct = (climateSpend / rollupClean.total) * 100;
 
@@ -205,41 +207,38 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
         <div className="L-hero-inner">
           <div className="L-hero-mast">
             <div className="issue-line">
-              <span className="vol">VOL. XXVI · ISSUE 01</span>
+              <span className="vol">{t('landing.issueLine.vol')}</span>
               <span className="sep">—</span>
-              <span className="date">FISCAL YEAR 2026</span>
+              <span className="date">{t('landing.issueLine.date')}</span>
               <span className="sep">—</span>
-              <span className="cost">OPEN CIVIC BRIEFING</span>
+              <span className="cost">{t('landing.issueLine.cost')}</span>
             </div>
             <h1 className="L-headline">
-              A city<br />
-              <span className="serif-it">building toward</span><br />
-              2028.
+              {t('landing.headline')}<br />
+              <span className="serif-it">{t('landing.headlineBuilding')}</span><br />
+              {t('landing.headline2028')}
             </h1>
             <div className="L-deck">
               <p>
-                Naga City's Annual Investment Program for 2026 commits
-                <strong> ₱2.85 billion</strong> across <strong>1,216 programs, projects, and activities</strong>
-                — submitted by <strong>94 implementing offices</strong>, mapped across
-                four sector lenses, and aligned to seven 2028 Finish-Line clusters that the
-                administration has pledged to deliver by the end of its term.
+                {t('landing.deck1')}
+                <strong> ₱2.85 billion</strong> {t('landing.deck2')} <strong>1,216 programs, projects, and activities</strong>
+                {t('landing.deck3')} <strong>94 implementing offices</strong>{t('landing.deck4')}
               </p>
               <p className="byline">
-                An editorial dashboard by the Office of the City Mayor · Budget and Management.
-                Every figure below links to the underlying line items.
+                {t('landing.byline')}
               </p>
             </div>
           </div>
 
           <div className="L-hero-stats">
-            <BigNumber value={2.85} decimals={2} prefix="₱" suffix="B" label="Total 2026 AIP" sub="Reported, before data-quality review" />
-            <BigNumber value={1216} label="Programs, projects, activities" sub="Submitted Nov 2025" />
-            <BigNumber value={94} label="Implementing offices" sub="Across four sector mandates" />
+            <BigNumber value={2.85} decimals={2} prefix="₱" suffix="B" label={t('landing.totalAIP')} sub={t('landing.totalAIPSub')} />
+            <BigNumber value={1216} label={t('landing.programsCount')} sub={t('landing.submitted')} />
+            <BigNumber value={94} label={t('landing.officesCount')} sub={t('landing.acrossFour')} />
           </div>
         </div>
 
         <div className="L-scroll-hint">
-          <span>Scroll</span>
+          <span>{t('landing.scroll')}</span>
           <div className="line" />
         </div>
       </section>
@@ -255,52 +254,45 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
             />
           </div>
           <div className="L-feature-text">
-            <div className="eyebrow">The climate line item</div>
+            <div className="eyebrow">{t('landing.climateEyebrow')}</div>
             <h2 className="L-h2">
-              <span className="serif-it">Two percent</span> of the budget
-              — and the <span className="underline-accent">entire case</span> for resilience.
+              <span className="serif-it">{t('landing.climateTitle1')}</span> {t('landing.climateTitle2')}
+              — and the <span className="underline-accent">{t('landing.climateTitle4')}</span> {t('landing.climateTitle5')}
             </h2>
             <div className="L-copy">
               <p>
-                Climate-tagged spending reaches
-                <strong> ₱{climateSpend.toFixed(1)}M</strong> in 2026 —
-                roughly <strong>{climateSpendPct.toFixed(1)}%</strong> of a ₱2.85 billion budget.
-                Modest on paper; consequential in practice.
+                {t('landing.climateCopy1')}
+                <strong> ₱{climateSpend.toFixed(1)}M</strong>
+                {t('landing.climateCopy1b')} <strong>{climateSpendPct.toFixed(1)}%</strong> {t('landing.climateCopy1c')}
               </p>
               <p>
-                The two categories tell different stories. <em>Adaptation</em> —
-                drainage, evacuation, early warning — absorbs most of the envelope.
-                <em> Mitigation</em> — solar streetlights, waste-to-energy pilots, active-transport
-                corridors — is smaller, and grows slowly. Both are underwritten almost entirely
-                by the General Fund, which means council politics, not donor cycles, decide the pace.
+                {t('landing.climateCopy2')}
               </p>
               <p>
-                For a city that sits between two river systems and under a typhoon corridor,
-                this line is less an expense than an insurance premium on the rest of the budget.
+                {t('landing.climateCopy3')}
               </p>
             </div>
             <button className="L-cta" onClick={() => setPageId('cluster:Envi, Infra and Housing')}>
-              See every climate-tagged line →
+              {t('landing.seeClimate')}
             </button>
           </div>
         </div>
 
         <div className="L-feature-stats">
-          <BigNumber value={climateSpend} compact prefix="₱" suffix="M" label="Climate-tagged spend" sub="Adaptation + mitigation combined" />
+          <BigNumber value={climateSpend} compact prefix="₱" suffix="M" label={t('landing.climateSpend')} sub={t('landing.adaptMitig')} />
           <BigNumber value={climateSpendPct} decimals={1} suffix="%" label="of total 2026 AIP" sub="Ex-outliers denominator" />
-          <BigNumber value={rollupClean.co} compact prefix="₱" suffix="M" label="Capital outlay" sub="The hard infrastructure spine" />
+          <BigNumber value={rollupClean.co} compact prefix="₱" suffix="M" label={t('landing.capitalOutlay')} sub={t('landing.hardInfra')} />
         </div>
       </section>
 
       <section className="L-clusters">
         <div className="L-section-head">
-          <div className="eyebrow">Eight promises · 2028 Finish-Line</div>
+          <div className="eyebrow">{t('landing.clustersEyebrow')}</div>
           <h2 className="L-h2">
-            Where the money is <span className="serif-it">supposed</span> to land.
+            {t('landing.clustersTitle1')} <span className="serif-it">{t('landing.clustersTitle2')}</span> {t('landing.clustersTitle3')}
           </h2>
           <p className="L-lede">
-            The Finish-Line framework organizes the 2028 administration commitments into eight clusters.
-            Each spread below pulls its own 2026 envelope, its own PAP count, and the offices advancing it.
+            {t('landing.clustersLede')}
           </p>
         </div>
 
@@ -314,7 +306,9 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
                 fl={fl} content={c} rollup={r} reversed={reversed}
                 color={FINISH_LINE_COLORS[fl]}
                 index={i}
-                onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('cluster:' + fl); }} />
+                onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('cluster:' + fl); }}
+                t={t}
+              />
             );
           })}
         </div>
@@ -322,23 +316,21 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
 
       <section className="L-digin">
         <div className="L-digin-inner">
-          <div className="eyebrow">The long view</div>
+          <div className="eyebrow">{t('landing.diginEyebrow')}</div>
           <h2 className="L-h2">
-            <span className="serif-it">Every</span> peso.
-            <span className="serif-it"> Every</span> office.
-            <span className="serif-it"> Every</span> line.
+            <span className="serif-it">{t('landing.diginTitle1')}</span> {t('landing.diginTitle2')}
+            <span className="serif-it">{t('landing.diginTitle3')}</span> {t('landing.diginTitle4')}
+            <span className="serif-it">{t('landing.diginTitle5')}</span> {t('landing.diginTitle6')}
           </h2>
           <p>
-            The landing page is editorial. The <strong>Data</strong> tab is operational —
-            a full filterable registry of every PAP, with exports, climate flags, funding sources,
-            and the 22 rows where the source spreadsheet reported outlier values we still need to reconcile.
+            {t('landing.diginCopy')}
           </p>
           <div className="L-digin-cta">
             <button className="btn primary large" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('overview'); }}>
-              Open the full dashboard →
+              {t('landing.openDashboard')}
             </button>
             <button className="btn large" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('cluster:Inclusive and Thriving Economy'); }}>
-              Browse by cluster
+              {t('landing.browseCluster')}
             </button>
           </div>
         </div>
@@ -346,16 +338,16 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
 
       <footer className="L-footer">
         <div className="L-footer-col">
-          <div className="k">Published</div>
-          <div className="v">Naga City Office of the Mayor · Nov 2025</div>
+          <div className="k">{t('footer.published')}</div>
+          <div className="v">{t('footer.publishedVal')}</div>
         </div>
         <div className="L-footer-col">
-          <div className="k">Data source</div>
-          <div className="v">AIP FY2026 submission · 1,216 rows × 23 columns</div>
+          <div className="k">{t('footer.dataSource')}</div>
+          <div className="v">{t('footer.dataSourceVal')}</div>
         </div>
         <div className="L-footer-col">
-          <div className="k">Notes</div>
-          <div className="v">22 OSCA rows flagged · 299 PAPs unspecified funding</div>
+          <div className="k">{t('footer.notes')}</div>
+          <div className="v">{t('footer.notesVal')}</div>
         </div>
       </footer>
     </div>
@@ -370,9 +362,10 @@ interface ClusterSpreadProps {
   color: string;
   index: number;
   onClick: () => void;
+  t: (k: string) => string;
 }
 
-function ClusterSpread({ fl, content, rollup: r, reversed, color, index, onClick }: ClusterSpreadProps) {
+function ClusterSpread({ fl, content, rollup: r, reversed, color, index, onClick, t }: ClusterSpreadProps) {
   const [ref, visible] = useReveal(0.12);
   return (
     <article ref={ref}
@@ -391,25 +384,25 @@ function ClusterSpread({ fl, content, rollup: r, reversed, color, index, onClick
         />
       </div>
       <div className="L-spread-text">
-        <div className="eyebrow" style={{color}}>Cluster {index + 1} of 8</div>
+        <div className="eyebrow" style={{color}}>{t('landing.clusterOf')} {index + 1} {t('landing.of8')}</div>
         <h3 className="L-spread-title">{fl}</h3>
         <div className="L-spread-rail">
           <div className="rail-item">
-            <div className="k">2026 envelope</div>
+            <div className="k">{t('landing.envelope2026')}</div>
             <div className="v">{fmtPeso(r.total)}</div>
           </div>
           <div className="rail-item">
-            <div className="k">PAPs</div>
+            <div className="k">{t('hero.paps')}</div>
             <div className="v">{fmtInt(r.pap_count)}</div>
           </div>
           <div className="rail-item">
-            <div className="k">Climate-tagged</div>
+            <div className="k">{t('landing.climateTagged')}</div>
             <div className="v">{fmtCompact((r.cc_adapt || 0) + (r.cc_mitig || 0))}</div>
           </div>
         </div>
         <p className="L-spread-body">{content.blurb}</p>
         <span className="L-spread-link" style={{color}}>
-          Read the cluster page →
+          {t('landing.readCluster')}
         </span>
       </div>
     </article>

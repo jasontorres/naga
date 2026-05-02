@@ -8,6 +8,7 @@ import {
   rollup, groupBy,
   FINISH_LINE_COLORS, FUNDING_COLORS,
 } from './utils.tsx';
+import { useLocale } from './i18n.tsx';
 
 interface DataQuality {
   rows_total: number;
@@ -30,6 +31,7 @@ interface BandAProps {
 }
 
 export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredRollup, dataQuality, hasFilters, lastUpdated }: BandAProps) {
+  const { t } = useLocale();
   const isReported = !hasFilters && !useClean;
   const r = hasFilters ? filteredRollup : (useClean ? rollupClean : rollupAll);
   const total = r.total;
@@ -44,16 +46,16 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
   let displayVal: string, displayUnit: string;
   if (isReported) {
     displayVal = (total / 1000).toFixed(1);
-    displayUnit = 'billion';
+    displayUnit = t('kpi.billion');
     if (Math.abs(total - 16634380.1872) < 1) {
       displayVal = '16.6';
     }
   } else if (total >= 1000) {
     displayVal = (total / 1000).toFixed(2);
-    displayUnit = 'billion';
+    displayUnit = t('kpi.billion');
   } else {
     displayVal = total.toFixed(1);
-    displayUnit = 'million';
+    displayUnit = t('kpi.million');
   }
 
   const ringSize = 58, ringR = 24, ringSW = 8;
@@ -66,11 +68,11 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
       <div className="hero" role="region" aria-label="Hero KPIs">
         <div className="cell">
           <div className="label">
-            Total AIP 2026 · ₱ millions
+            {t('kpi.totalAIP')}
             {!hasFilters && (
               <>
-                <span className={`tag ${!useClean ? 'active' : ''}`} onClick={() => setUseClean(false)} role="button">Reported</span>
-                <span className={`tag ${useClean ? 'active' : ''}`} onClick={() => setUseClean(true)} role="button">Ex-outliers</span>
+                <span className={`tag ${!useClean ? 'active' : ''}`} onClick={() => setUseClean(false)} role="button">{t('kpi.reported')}</span>
+                <span className={`tag ${useClean ? 'active' : ''}`} onClick={() => setUseClean(true)} role="button">{t('kpi.exOutliers')}</span>
               </>
             )}
           </div>
@@ -80,13 +82,13 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
             <span className="unit">{displayUnit}</span>
           </div>
           <div className="hero-sub">
-            <span>{fmtInt(r.pap_count)} programs, projects & activities</span>
-            {hasFilters && <span style={{color:'var(--accent)', fontWeight: 500}}>· filtered view</span>}
-            {isReported && <span style={{color:'var(--ink-4)', fontSize: 11}}>· split shown ex-outliers</span>}
+            <span>{fmtInt(r.pap_count)} {t('kpi.programs')}</span>
+            {hasFilters && <span style={{color:'var(--accent)', fontWeight: 500}}>{t('kpi.filteredView')}</span>}
+            {isReported && <span style={{color:'var(--ink-4)', fontSize: 11}}>{t('kpi.splitShown')}</span>}
           </div>
           <div className="split">
             <div className="seg ps">
-              <div className="k">PS · personnel</div>
+              <div className="k">PS · {t('kpi.offices').replace('opisina', 'personnel').replace('offices', 'personnel')}</div>
               <div className="v">{fmtCompact(splitR.ps)}<span className="pct">{fmtPct(splitR.ps, splitTotal)}</span></div>
             </div>
             <div className="seg mooe">
@@ -101,7 +103,7 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
         </div>
 
         <div className="cell">
-          <div className="label">Climate-tagged spend</div>
+          <div className="label">{t('kpi.climateSpend')}</div>
           <div className="climate-chip" style={{marginTop: 14}}>
             <div className="climate-ring">
               <svg width={ringSize} height={ringSize}>
@@ -119,47 +121,47 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
             <div style={{minWidth: 0}}>
               <div style={{fontWeight: 600, fontSize: 20, letterSpacing: '-0.02em'}}>{fmtPeso(climateSpend)}</div>
               <div className="climate-legend" style={{marginTop: 4}}>
-                <div><span className="swatch" style={{background:'var(--c-adapt)'}}></span>Adaptation {fmtCompact(r.cc_adapt)}</div>
-                <div><span className="swatch" style={{background:'var(--c-mitig)'}}></span>Mitigation {fmtCompact(r.cc_mitig)}</div>
+                <div><span className="swatch" style={{background:'var(--c-adapt)'}}></span>{t('kpi.adaptation')} {fmtCompact(r.cc_adapt)}</div>
+                <div><span className="swatch" style={{background:'var(--c-mitig)'}}></span>{t('kpi.mitigation')} {fmtCompact(r.cc_mitig)}</div>
               </div>
             </div>
           </div>
         </div>
 
         <div className="cell">
-          <div className="label">Implementing offices · sectors</div>
+          <div className="label">{t('kpi.officesSectors')}</div>
           <div style={{display:'flex', gap: 22, alignItems:'baseline', marginTop: 12}}>
             <div>
               <div className="count-big">{dataQuality.officesInScope}</div>
-              <div className="count-sub">offices</div>
+              <div className="count-sub">{t('kpi.offices')}</div>
             </div>
             <div>
               <div className="count-big">{dataQuality.sectorsInScope}</div>
-              <div className="count-sub">sectors</div>
+              <div className="count-sub">{t('kpi.sectors')}</div>
             </div>
           </div>
           <div style={{marginTop: 10, fontSize: 12, color:'var(--ink-3)', lineHeight: 1.45}}>
-            Classified across 4 sector lenses and 7 Finish-Line clusters.
+            {t('kpi.classified')}
           </div>
         </div>
 
         <div className="cell">
-          <div className="label">Data integrity</div>
+          <div className="label">{t('kpi.dataIntegrity')}</div>
           <div style={{marginTop: 12, display:'flex', flexDirection:'column', gap: 8, fontSize: 12}}>
             <div style={{display:'flex', justifyContent:'space-between'}}>
-              <span style={{color:'var(--ink-3)'}}>Rows clean</span>
+              <span style={{color:'var(--ink-3)'}}>{t('kpi.rowsClean')}</span>
               <span className="mono" style={{fontWeight:600}}>{fmtInt(dataQuality.rows_clean)} / {fmtInt(dataQuality.rows_total)}</span>
             </div>
             <div style={{display:'flex', justifyContent:'space-between'}}>
-              <span style={{color:'var(--ink-3)'}}>Flagged (unit check)</span>
+              <span style={{color:'var(--ink-3)'}}>{t('kpi.flagged')}</span>
               <span className="mono" style={{fontWeight:600, color:'var(--c-co)'}}>{dataQuality.unit_check_outliers}</span>
             </div>
             <div style={{display:'flex', justifyContent:'space-between'}}>
-              <span style={{color:'var(--ink-3)'}}>Missing funding</span>
+              <span style={{color:'var(--ink-3)'}}>{t('kpi.missingFunding')}</span>
               <span className="mono" style={{fontWeight:600}}>{dataQuality.missing_funding_source}</span>
             </div>
             <div style={{fontSize: 10.5, color:'var(--ink-4)', fontFamily:'JetBrains Mono, monospace', marginTop: 4}}>
-              Last updated · {lastUpdated}
+              {t('kpi.lastUpdated')} · {lastUpdated}
             </div>
           </div>
         </div>
@@ -169,8 +171,8 @@ export function BandA({ rollupAll, rollupClean, useClean, setUseClean, filteredR
         <div className="banner" role="alert">
           <span className="icon">⚠</span>
           <span>
-            <strong>Reported total includes 22 flagged OSCA rows</strong> that appear to have been entered in raw pesos instead of millions.
-            Toggle <em>Ex-outliers</em> to view the clean total of <strong>₱2.85B</strong> across 1,194 PAPs.
+            <strong>{t('banner.outlierWarning')}</strong> {t('banner.outlierDetail')}
+            {' '}{t('banner.toggleClean')} <em>{t('kpi.exOutliers')}</em> {t('banner.cleanTotal')} <strong>₱2.85B</strong> {t('banner.acrossPaps')}
           </span>
         </div>
       )}
@@ -189,6 +191,7 @@ interface BandBProps {
 }
 
 export function BandB({ items, filters, setFilters, filteredRollup, useClean, onSectorClick, onClusterClick }: BandBProps) {
+  const { t } = useLocale();
   const [hoveredFL, setHoveredFL] = useState<string | null>(null);
 
   const sectorData = useMemo(() => {
@@ -238,8 +241,8 @@ export function BandB({ items, filters, setFilters, filteredRollup, useClean, on
     <div className="band-b">
       <div className="card panel">
         <h3>
-          Sector overview
-          <span className="hint">{onSectorClick ? 'click a row to open the sector page' : 'click a row to filter'} · amounts ₱ millions</span>
+          {t('sectors.overview')}
+          <span className="hint">{onSectorClick ? t('sectors.clickSector') : t('sectors.clickFilter')} · {t('sectors.amounts')}</span>
         </h3>
         {sectorData.map(s => (
           <div key={s.name}
@@ -263,18 +266,18 @@ export function BandB({ items, filters, setFilters, filteredRollup, useClean, on
           </div>
         ))}
         <div className="legend">
-          <span className="item"><span className="sw" style={{background:'var(--c-ps)'}}></span>PS — Personnel Services</span>
-          <span className="item"><span className="sw" style={{background:'var(--c-mooe)'}}></span>MOOE — Maintenance & Other Operating</span>
-          <span className="item"><span className="sw" style={{background:'var(--c-co)'}}></span>CO — Capital Outlay</span>
-          {!useClean && <span style={{marginLeft:'auto', color:'var(--ink-4)', fontFamily:'JetBrains Mono, monospace'}}>chart excludes 22 flagged outliers</span>}
-          {useClean && <span style={{marginLeft:'auto', color:'var(--ink-4)', fontFamily:'JetBrains Mono, monospace'}}>excluding 22 flagged rows</span>}
+          <span className="item"><span className="sw" style={{background:'var(--c-ps)'}}></span>{t('sectors.ps')}</span>
+          <span className="item"><span className="sw" style={{background:'var(--c-mooe)'}}></span>{t('sectors.mooe')}</span>
+          <span className="item"><span className="sw" style={{background:'var(--c-co)'}}></span>{t('sectors.co')}</span>
+          {!useClean && <span style={{marginLeft:'auto', color:'var(--ink-4)', fontFamily:'JetBrains Mono, monospace'}}>{t('sectors.chartExcludes')}</span>}
+          {useClean && <span style={{marginLeft:'auto', color:'var(--ink-4)', fontFamily:'JetBrains Mono, monospace'}}>{t('sectors.excluding')}</span>}
         </div>
       </div>
 
       <div className="card panel">
         <h3>
-          Finish-Line clusters
-          <span className="hint">2028 Naga</span>
+          {t('fl.clusters')}
+          <span className="hint">{t('fl.naga2028')}</span>
         </h3>
         <div className="donut-wrap">
           <div style={{position: 'relative'}}>
@@ -283,7 +286,7 @@ export function BandB({ items, filters, setFilters, filteredRollup, useClean, on
                    onClick={(s) => s.key !== 'Unclassified' && toggleFL(s.key)} />
             <div className="donut-center" style={{position: 'absolute', inset: 0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', pointerEvents:'none'}}>
               <div className="big">{fmtPeso(totalFL)}</div>
-              <div className="small">across {finishLineData.length} clusters</div>
+              <div className="small">{t('fl.across')} {finishLineData.length} {t('fl.clustersWord')}</div>
             </div>
           </div>
           <div className="donut-legend">
@@ -312,6 +315,7 @@ interface BandDProps {
 }
 
 export function BandD({ items, filters, setFilters }: BandDProps) {
+  const { t } = useLocale();
   const [sortKey, setSortKey] = useState('total');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [page, setPage] = useState(0);
@@ -388,11 +392,11 @@ export function BandD({ items, filters, setFilters }: BandDProps) {
     return (
       <div className="card table-wrap">
         <div className="table-toolbar">
-          <div className="count"><strong>Line items</strong></div>
+          <div className="count"><strong>{t('items.title')}</strong></div>
         </div>
         <div className="empty">
-          <div className="title">No rows match the current filters</div>
-          <div>Try loosening a filter to see PAP line items.</div>
+          <div className="title">{t('items.noRows')}</div>
+          <div>{t('items.noRowsSub')}</div>
         </div>
       </div>
     );
@@ -402,29 +406,29 @@ export function BandD({ items, filters, setFilters }: BandDProps) {
     <div className="card table-wrap">
       <div className="table-toolbar">
         <div className="count">
-          <strong>{fmtInt(total)}</strong> PAPs · page {curPage + 1} of {pages} · amounts in ₱ millions
+          <strong>{fmtInt(total)}</strong> PAPs · {t('items.page')} {curPage + 1} {t('items.ofPages')} {pages} · {t('items.amountsIn')}
         </div>
         <div className="grow" />
-        <input className="type-input search" type="search" placeholder="Search description, code, office…"
+        <input className="type-input search" type="search" placeholder={t('items.searchPlaceholder')}
                value={filters.search}
                onChange={(e) => setFilters(f => ({ ...f, search: e.target.value }))} />
-        <button className="btn primary" onClick={exportCSV}>Export CSV ({fmtInt(total)})</button>
+        <button className="btn primary" onClick={exportCSV}>{t('items.export')} ({fmtInt(total)})</button>
       </div>
 
       <table className="line-items">
         <thead>
           <tr>
-            {header('code', 'Code')}
-            {header('desc', 'Description')}
-            {header('office', 'Office')}
-            {header('funding', 'Funding')}
+            {header('code', t('items.code'))}
+            {header('desc', t('items.description'))}
+            {header('office', t('items.office'))}
+            {header('funding', t('items.funding'))}
             {header('ps', 'PS', 'num')}
             {header('mooe', 'MOOE', 'num')}
             {header('co', 'CO', 'num')}
-            {header('total', 'Total', 'num')}
-            <th>Climate</th>
-            <th>Finish-Line</th>
-            <th>Mainstreaming</th>
+            {header('total', t('items.total'), 'num')}
+            <th>{t('items.climate')}</th>
+            <th>{t('items.finishLine')}</th>
+            <th>{t('items.mainstreaming')}</th>
           </tr>
         </thead>
         <tbody>
@@ -489,7 +493,7 @@ export function BandD({ items, filters, setFilters }: BandDProps) {
                 <span className="code">{it.aip_code}</span>
                 <span>{it.office}</span>
                 <span className={`badge fund ${it.funding_norm === 'Unspecified' ? 'unspec' : ''}`}>{it.funding_norm}</span>
-                {climate > 0 && <span className="badge climate">climate</span>}
+                {climate > 0 && <span className="badge climate">{t('items.climateTagged')}</span>}
                 {it.data_quality_flag && <span className="badge flag">⚠ {it.data_quality_flag}</span>}
               </div>
               <div className="amts">
@@ -504,11 +508,11 @@ export function BandD({ items, filters, setFilters }: BandDProps) {
       </div>
 
       <div className="pagination">
-        <button className="btn" disabled={curPage === 0} onClick={() => setPage(0)}>« First</button>
-        <button className="btn" disabled={curPage === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>‹ Prev</button>
+        <button className="btn" disabled={curPage === 0} onClick={() => setPage(0)}>{t('items.first')}</button>
+        <button className="btn" disabled={curPage === 0} onClick={() => setPage(p => Math.max(0, p - 1))}>{t('items.prev')}</button>
         <span className="pg">{curPage + 1} / {pages}</span>
-        <button className="btn" disabled={curPage >= pages - 1} onClick={() => setPage(p => Math.min(pages - 1, p + 1))}>Next ›</button>
-        <button className="btn" disabled={curPage >= pages - 1} onClick={() => setPage(pages - 1)}>Last »</button>
+        <button className="btn" disabled={curPage >= pages - 1} onClick={() => setPage(p => Math.min(pages - 1, p + 1))}>{t('items.next')}</button>
+        <button className="btn" disabled={curPage >= pages - 1} onClick={() => setPage(pages - 1)}>{t('items.last')}</button>
       </div>
     </div>
   );

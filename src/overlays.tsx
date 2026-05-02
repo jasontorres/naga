@@ -5,6 +5,7 @@ import {
   fmtPeso, shortFL, shortSector,
   FINISH_LINE_COLORS,
 } from './utils.tsx';
+import { useLocale } from './i18n.tsx';
 
 interface BandEProps {
   items: Item[];
@@ -13,6 +14,7 @@ interface BandEProps {
 }
 
 export function BandE({ items, useClean, pageKind }: BandEProps) {
+  const { t } = useLocale();
   const [open, setOpen] = useState(true);
 
   const base = useMemo(() => items.filter(x => !isOutlier(x)), [items]);
@@ -72,21 +74,21 @@ export function BandE({ items, useClean, pageKind }: BandEProps) {
   return (
     <div className="band">
       <div className="band-head">
-        <span className="eyebrow">Band E</span>
+        <span className="eyebrow">{t('overlays.eyebrow')}</span>
         <h2 className="collapsible-head" onClick={() => setOpen(!open)}
             style={{cursor:'pointer'}}>
           <span className={`caret ${open ? 'open' : ''}`} style={{display:'inline-block'}}>{open ? '▾' : '▸'}</span>
-          Strategic overlays
+          {t('overlays.title')}
         </h2>
-        <span className="sub">Finish-Line · Mainstreaming · Schedule</span>
+        <span className="sub">{t('overlays.sub')}</span>
       </div>
 
       {open && (
         <div className="overlays">
           <div className="card panel">
             <h3>
-              2028 Finish-Line spend
-              <span className="hint">₱M per cluster</span>
+              {t('overlays.finishLineSpend')}
+              <span className="hint">{t('overlays.perCluster')}</span>
             </h3>
             {flData.map(f => (
               <div key={f.key} className="fl-bar">
@@ -104,8 +106,8 @@ export function BandE({ items, useClean, pageKind }: BandEProps) {
 
           <div className="card">
             <h3 style={{padding:'20px 22px 0'}}>
-              Mainstreaming coverage
-              <span className="hint">development plan × sector</span>
+              {t('overlays.mainstreaming')}
+              <span className="hint">{t('overlays.devPlanSector')}</span>
             </h3>
             <div className="matrix" style={{
               gridTemplateColumns: `140px repeat(${SECTORS.length}, 1fr)`,
@@ -134,8 +136,8 @@ export function BandE({ items, useClean, pageKind }: BandEProps) {
 
           <div className="card span-2">
             <h3 style={{padding:'20px 22px 0'}}>
-              Schedule · PAPs active by quarter
-              <span className="hint">start_date → end_date · counts overlap each quarter</span>
+              {t('overlays.schedule')}
+              <span className="hint">{t('overlays.scheduleHint')}</span>
             </h3>
             <div className="swimlanes">
               <div className="sw-scale">
@@ -167,7 +169,7 @@ export function BandE({ items, useClean, pageKind }: BandEProps) {
                 </div>
               ))}
               <div className="sw-row" style={{gridTemplateColumns: `160px repeat(4, 1fr)`, borderTop: '2px solid var(--rule-strong)', borderBottom: 'none', marginTop: 4, paddingTop: 8, fontWeight: 600}}>
-                <div className="unit">City-wide total</div>
+                <div className="unit">{t('overlays.cityTotal')}</div>
                 {schedData.sum.map((n, i) => (
                   <div key={i} style={{textAlign:'center', fontFamily:'JetBrains Mono, monospace', fontSize: 12}}>{n}</div>
                 ))}

@@ -12,6 +12,8 @@ import { BandA, BandB, BandD } from './bands.tsx';
 import { BandE } from './overlays.tsx';
 import { TweaksPanel } from './tweaks.tsx';
 import { Landing } from './landing.tsx';
+import { LanguageSelector } from './LanguageSelector.tsx';
+import { useLocale } from './i18n.tsx';
 
 interface Page {
   id: string;
@@ -33,7 +35,7 @@ function buildPages(_allItems: Item[]): Page[] {
   return pages;
 }
 
-function PageHero({ page, items }: { page: Page; items: Item[] }) {
+function PageHero({ page, items, t }: { page: Page; items: Item[]; t: (k: string) => string }) {
   if (page.kind === 'overview') return null;
   const base = items.filter((x) => !isOutlier(x));
   const scoped = base.filter((x) => {
@@ -54,22 +56,22 @@ function PageHero({ page, items }: { page: Page; items: Item[] }) {
     } : {}}>
       <div>
         <div className="eyebrow">
-          {page.kind === 'sector' ? 'Sector' : '2028 Finish-Line Cluster'}
+          {page.kind === 'sector' ? t('hero.sector') : t('hero.2028cluster')}
         </div>
         <h1>{page.kind === 'cluster' ? page.cluster : shortSector(page.sector!)}</h1>
         <div className="blurb">{blurb}</div>
       </div>
       <div className="stats">
         <div>
-          <div className="k">Total</div>
+          <div className="k">{t('hero.total')}</div>
           <div className="v">{fmtPeso(r.total)}</div>
         </div>
         <div>
-          <div className="k">PAPs</div>
+          <div className="k">{t('hero.paps')}</div>
           <div className="v">{fmtInt(r.pap_count)}</div>
         </div>
         <div>
-          <div className="k">Offices</div>
+          <div className="k">{t('hero.offices')}</div>
           <div className="v">{new Set(scoped.map((x) => x.unit)).size}</div>
         </div>
       </div>
@@ -78,6 +80,7 @@ function PageHero({ page, items }: { page: Page; items: Item[] }) {
 }
 
 export default function App() {
+  const { t } = useLocale();
   const [data, setData] = useState<AIPData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFilters] = useState<Filters>(initialFilters);
@@ -179,11 +182,11 @@ export default function App() {
     else setLevel({ type: 'sector' });
   }, [pageId]);
 
-  if (error) return <div className="shell"><div className="empty"><div className="title">Could not load data</div><div>{error}</div></div></div>;
+  if (error) return <div className="shell"><div className="empty"><div className="title">{t('loading.error')}</div><div>{error}</div></div></div>;
   if (!data) return (
     <div className="shell">
       <div style={{ padding: '80px 0', textAlign: 'center' }}>
-        <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: 'var(--ink-3)' }}>Loading 1,216 PAPs…</div>
+        <div style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: 12, color: 'var(--ink-3)' }}>{t('loading.paps')}</div>
       </div>
     </div>
   );
@@ -197,14 +200,15 @@ export default function App() {
         <div className="wordmark">
           <img className="seal-img" src="assets/naga-seal.png" alt="Naga City" />
           <span className="sep">·</span>
-          <span className="title">Annual Investment Program — Fiscal Year 2026</span>
-          <span className="badge">Transparency</span>
+          <span className="title">{t('topbar.title')}</span>
+          <span className="badge">{t('topbar.badge')}</span>
         </div>
         <div className="grow" />
+        <LanguageSelector />
         <div className="meta">
           <a className="top-link" href="https://www2.naga.gov.ph" target="_blank" rel="noopener noreferrer">naga.gov.ph</a>
-          <a className="top-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">About</a>
-          <a className="top-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">Contact</a>
+          <a className="top-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">{t('topbar.about')}</a>
+          <a className="top-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">{t('topbar.contact')}</a>
         </div>
         <button
           className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}
@@ -221,11 +225,11 @@ export default function App() {
         <nav className="mobile-menu-nav">
           <button className={`mobile-nav-item ${page.id === 'landing' ? 'active' : ''}`}
             onClick={() => { setPageId('landing'); setMobileMenuOpen(false); }}>
-            Home
+            {t('nav.home')}
           </button>
           <button className={`mobile-nav-item ${page.id === 'overview' ? 'active' : ''}`}
             onClick={() => { setPageId('overview'); setMobileMenuOpen(false); }}>
-            Overview
+            {t('nav.overview')}
           </button>
           <div className="mobile-nav-divider" />
           {clusterPages.map((p) => (
@@ -237,8 +241,8 @@ export default function App() {
           ))}
           <div className="mobile-nav-divider" />
           <a className="mobile-nav-link" href="https://www2.naga.gov.ph" target="_blank" rel="noopener noreferrer">naga.gov.ph</a>
-          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">About</a>
-          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">Contact</a>
+          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">{t('topbar.about')}</a>
+          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">{t('topbar.contact')}</a>
         </nav>
       </div>
 
@@ -247,12 +251,12 @@ export default function App() {
           <button className={`nav-tab ${page.id === 'landing' ? 'active' : ''}`}
           onClick={() => setPageId('landing')}
           role="tab">
-            Home
+            {t('nav.home')}
           </button>
           <button className={`nav-tab ${page.id === 'overview' ? 'active' : ''}`}
           onClick={() => setPageId('overview')}
           role="tab">
-            Overview
+            {t('nav.overview')}
           </button>
           <div className="nav-divider" />
           {clusterPages.map((p) => <button key={p.id}
@@ -270,14 +274,14 @@ export default function App() {
                  setPageId={setPageId} />
       ) : (
       <div className="shell">
-        <PageHero page={page} items={allItems} />
+        <PageHero page={page} items={allItems} t={t} />
 
         {page.kind === 'overview' &&
         <div className="band">
             <div className="band-head">
-              <span className="eyebrow">Headline</span>
-              <h2>Where ₱2.85 billion goes in 2026</h2>
-              <span className="sub">All amounts in Philippine pesos, millions</span>
+              <span className="eyebrow">{t('headline.eyebrow')}</span>
+              <h2>{t('headline.title')}</h2>
+              <span className="sub">{t('headline.sub')}</span>
             </div>
             <BandA rollupAll={rollupAll!}
           rollupClean={rollupClean!}
@@ -292,12 +296,12 @@ export default function App() {
 
         <div className="band filter-band">
           <div className="band-head">
-            <span className="eyebrow">Filters</span>
-            <h2 style={{ fontSize: 22, color: 'var(--ink-2)' }}>Filter Projects</h2>
+            <span className="eyebrow">{t('filters.eyebrow')}</span>
+            <h2 style={{ fontSize: 22, color: 'var(--ink-2)' }}>{t('filters.title')}</h2>
             <span className="sub">
               {page.kind === 'overview' ?
-              'Click to filter the data below' :
-              `Viewing ${page.kind === 'cluster' ? page.cluster : shortSector(page.sector!)} — use filters to narrow further`}
+              t('filters.clickToFilter') :
+              `${t('filters.viewing')} ${page.kind === 'cluster' ? page.cluster : shortSector(page.sector!)} ${t('filters.useFilters')}`}
             </span>
           </div>
           <FilterRail items={pageItems} filters={filters} setFilters={setFilters} allUnits={allUnits} />
@@ -308,9 +312,9 @@ export default function App() {
         {page.kind === 'overview' &&
         <div className="band">
             <div className="band-head">
-              <span className="eyebrow">Sectors</span>
-              <h2>Sector mix and Finish-Line themes</h2>
-              <span className="sub">Click a sector or cluster to jump to its page</span>
+              <span className="eyebrow">{t('sectors.eyebrow')}</span>
+              <h2>{t('sectors.title')}</h2>
+              <span className="sub">{t('sectors.sub')}</span>
             </div>
             <BandB items={filtered} filters={filters} setFilters={setFilters}
           filteredRollup={filteredRollup} useClean={useClean}
@@ -320,11 +324,11 @@ export default function App() {
 
         <div className="band">
           <div className="band-head">
-            <span className="eyebrow">Offices</span>
-            <h2>{page.kind === 'sector' ? 'Offices in this sector' :
-              page.kind === 'cluster' ? 'Programs aligned to this cluster' :
-              'Office deep-dive'}</h2>
-            <span className="sub">Click a tile to drill down · click a crumb to zoom out</span>
+            <span className="eyebrow">{t('offices.eyebrow')}</span>
+            <h2>{page.kind === 'sector' ? t('offices.sectorTitle') :
+              page.kind === 'cluster' ? t('offices.clusterTitle') :
+              t('offices.title')}</h2>
+            <span className="sub">{t('offices.sub')}</span>
           </div>
           <div className="card">
             <Treemap items={filtered.filter((x) => !isOutlier(x))} level={level} setLevel={setLevel}
@@ -335,9 +339,9 @@ export default function App() {
 
         <div className="band">
           <div className="band-head">
-            <span className="eyebrow">Line items</span>
-            <h2>PAP register</h2>
-            <span className="sub">Sortable · climate-tagged rows marked · flagged rows highlighted</span>
+            <span className="eyebrow">{t('items.eyebrow')}</span>
+            <h2>{t('items.title')}</h2>
+            <span className="sub">{t('items.sub')}</span>
           </div>
           <BandD items={filtered} filters={filters} setFilters={setFilters} />
         </div>
@@ -348,25 +352,21 @@ export default function App() {
           fontSize: 11.5, color: 'var(--ink-3)', lineHeight: 1.6,
           display: 'flex', gap: 24, flexWrap: 'wrap' }}>
           <div style={{ flex: 1, minWidth: 260 }}>
-            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>About this dashboard</div>
+            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>{t('dash.aboutTitle')}</div>
             <div>
-              Naga City's 2026 Annual Investment Program — ₱2.85 billion across 1,200+ programs,
-              projects and activities submitted by 94 implementing offices. Classified across
-              four sector lenses and seven 2028 Finish-Line clusters.
+              {t('dash.aboutText')}
             </div>
           </div>
           <div style={{ flex: 1, minWidth: 260 }}>
-            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>Data notes</div>
+            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>{t('dash.dataNotesTitle')}</div>
             <div>
-              All amounts in ₱ millions. 22 OSCA rows flagged as raw-peso outliers.
-              299 PAPs have no recorded funding source — shown as "Unspecified", never dropped.
-              CSV export reflects current filter state.
+              {t('dash.dataNotesText')}
             </div>
           </div>
           <div style={{ flex: 1, minWidth: 180 }}>
-            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>Schema</div>
+            <div style={{ fontWeight: 600, color: 'var(--ink-2)', marginBottom: 4 }}>{t('dash.schemaTitle')}</div>
             <div className="mono" style={{ fontSize: 10.5 }}>
-              aip2026.v1 · generated {lastUpdated}<br />
+              aip2026.v1 · {t('dash.generated')} {lastUpdated}<br />
               1,216 rows × 23 columns
             </div>
           </div>

@@ -5,6 +5,7 @@ import {
   fmtPeso, fmtCompact, shortSector,
   FUNDING_COLORS,
 } from './utils.tsx';
+import { useLocale } from './i18n.tsx';
 
 export function useTooltip() {
   const [tip, setTip] = useState<{ x: number; y: number; content: React.ReactNode } | null>(null);
@@ -118,6 +119,7 @@ interface TreemapProps {
 }
 
 export function Treemap({ items, level, setLevel, setFilters, filters, pinnedSector }: TreemapProps) {
+  const { t } = useLocale();
   const ref = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ w: 900, h: 420 });
   const tt = useTooltip();
@@ -197,7 +199,7 @@ export function Treemap({ items, level, setLevel, setFilters, filters, pinnedSec
         </span>
       ) : (
         <span className={`lvl ${level.type === 'sector' ? 'cur' : ''}`}
-              onClick={() => setLevel({ type: 'sector' })}>All sectors</span>
+              onClick={() => setLevel({ type: 'sector' })}>{t('charts.allSectors')}</span>
       )}
       {!pinnedSector && level.type !== 'sector' && (
         <>
@@ -222,7 +224,7 @@ export function Treemap({ items, level, setLevel, setFilters, filters, pinnedSec
       <div className="treemap-header">
         {crumbs}
         <div style={{marginLeft: 'auto', fontSize: 11.5, color: 'var(--ink-3)', fontFamily: 'JetBrains Mono, monospace'}}>
-          area = budget · color = dominant funding · ● climate-tagged
+          area = {t('charts.areaBudget')} · color = {t('charts.colorFunding')} · ● {t('charts.climateTagged')}
         </div>
       </div>
       <div ref={ref} className="treemap" style={{ height: size.h }}>
