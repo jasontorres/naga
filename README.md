@@ -1,25 +1,41 @@
-# CODING AGENTS: READ THIS FIRST
+# Naga City AIP 2026 Transparency Dashboard
 
-This is a **handoff bundle** from Claude Design (claude.ai/design).
+A public-facing, single-page web dashboard visualising Naga City's **2026 Annual Investment Program (AIP)** — ₱2.85 billion across 1,216 programs, projects and activities (PAPs) submitted by 94 implementing offices.
 
-A user mocked up designs in HTML/CSS/JS using an AI design tool, then exported this bundle so a coding agent can implement the designs for real.
+## Stack
 
-## What you should do — IMPORTANT
+- **Vite** + **React 19** + **TypeScript**
+- Zero external charting libraries — custom SVG treemap and donut
+- Google Fonts: Bebas Neue, DM Serif Display, Inter, JetBrains Mono
 
-**Read the chat transcripts first.** There are 1 chat transcript(s) in `naga/chats/`. The transcripts show the full back-and-forth between the user and the design assistant — they tell you **what the user actually wants** and **where they landed** after iterating. Don't skip them. The final HTML files are the output, but the chat is where the intent lives.
+## Features
 
-**Find the primary design file under `naga/project/` and read it top to bottom.** The chat transcripts will tell you which file the user was last iterating on. Then **follow its imports**: open every file it pulls in (shared components, CSS, scripts) so you understand how the pieces fit together before you start implementing.
+- **Landing page** — Magazine-style editorial with animated counters, parallax, and 8 Finish-Line cluster spotlights
+- **Band A** — Hero KPI strip (total AIP, PS/MOOE/CO split, climate ring, data quality)
+- **Band B** — Sector overview stacked bars + Finish-Line donut chart
+- **Band C** — Squarified treemap with drill-down (sector → unit → program)
+- **Band D** — Sortable, paginated line-item table with CSV export
+- **Band E** — Strategic overlays (Finish-Line spend, mainstreaming matrix, schedule swimlane)
+- **Filter rail** — Cross-filtering across all panels (sector, funding source, subcategory, office, cluster, climate, data quality)
+- **Tweaks panel** — Accent palette switcher (Indigo / Teal / Sunrise)
+- **Responsive** — Desktop-first, table collapses to cards on mobile
 
-**If anything is ambiguous, ask the user to confirm before you start implementing.** It's much cheaper to clarify scope up front than to build the wrong thing.
+## Development
 
-## About the design files
+```bash
+npm install
+npm run dev
+```
 
-The design medium is **HTML/CSS/JS** — these are prototypes, not production code. Your job is to **recreate them pixel-perfectly** in whatever technology makes sense for the target codebase (React, Vue, native, whatever fits). Match the visual output; don't copy the prototype's internal structure unless it happens to fit.
+## Build
 
-**Don't render these files in a browser or take screenshots unless the user asks you to.** Everything you need — dimensions, colors, layout rules — is spelled out in the source. Read the HTML and CSS directly; a screenshot won't tell you anything they don't.
+```bash
+npm run build
+npm run preview
+```
 
-## Bundle contents
+## Data
 
-- `naga/README.md` — this file
-- `naga/chats/` — conversation transcripts (read these!)
-- `naga/project/` — the `Naga` project files (HTML prototypes, assets, components)
+All amounts in **₱ millions**. Source: `public/data/aip2026.json` (~1.7 MB, nested sectors → units → subcategories → programs → items).
+
+22 OSCA rows are flagged as data-quality outliers (entered in raw pesos instead of millions). 299 PAPs have no recorded funding source and appear in an "Unspecified" bucket.
