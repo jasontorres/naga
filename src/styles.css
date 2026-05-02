@@ -1204,7 +1204,6 @@ table.line-items tbody tr.flagged td:first-child { border-left: 3px solid var(--
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
-  padding: 20px;
 }
 .overlays .span-2 { grid-column: span 2; }
 .overlays > .card {
