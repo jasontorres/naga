@@ -115,6 +115,14 @@ export default function App() {
     return () => window.removeEventListener('message', handler);
   }, []);
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (mobileMenuOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileMenuOpen]);
+
   const [headerScrolled, setHeaderScrolled] = useState(false);
   const [headerOnDark, setHeaderOnDark] = useState(false);
   useEffect(() => {
@@ -198,6 +206,40 @@ export default function App() {
           <a className="top-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">About</a>
           <a className="top-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">Contact</a>
         </div>
+        <button
+          className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          aria-label="Toggle menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          <span /><span /><span />
+        </button>
+      </div>
+
+      {mobileMenuOpen && <div className="mobile-overlay" onClick={() => setMobileMenuOpen(false)} />}
+      <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <nav className="mobile-menu-nav">
+          <button className={`mobile-nav-item ${page.id === 'landing' ? 'active' : ''}`}
+            onClick={() => { setPageId('landing'); setMobileMenuOpen(false); }}>
+            Home
+          </button>
+          <button className={`mobile-nav-item ${page.id === 'overview' ? 'active' : ''}`}
+            onClick={() => { setPageId('overview'); setMobileMenuOpen(false); }}>
+            Overview
+          </button>
+          <div className="mobile-nav-divider" />
+          {clusterPages.map((p) => (
+            <button key={p.id}
+              className={`mobile-nav-item ${page.id === p.id ? 'active' : ''}`}
+              onClick={() => { setPageId(p.id); setMobileMenuOpen(false); }}>
+              {p.label}
+            </button>
+          ))}
+          <div className="mobile-nav-divider" />
+          <a className="mobile-nav-link" href="https://www2.naga.gov.ph" target="_blank" rel="noopener noreferrer">naga.gov.ph</a>
+          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/about-naga/" target="_blank" rel="noopener noreferrer">About</a>
+          <a className="mobile-nav-link" href="https://www2.naga.gov.ph/contact-us/" target="_blank" rel="noopener noreferrer">Contact</a>
+        </nav>
       </div>
 
       <div className={`nav-tabs ${headerScrolled ? 'scrolled' : ''} ${headerOnDark ? 'on-dark' : ''}`} role="tablist">
