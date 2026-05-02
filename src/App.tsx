@@ -290,14 +290,14 @@ export default function App() {
           </div>
         }
 
-        <div className="band">
+        <div className="band filter-band">
           <div className="band-head">
             <span className="eyebrow">Filters</span>
-            <h2 style={{ fontSize: 22, color: 'var(--ink-2)' }}>Narrow the view</h2>
+            <h2 style={{ fontSize: 22, color: 'var(--ink-2)' }}>Filter Projects</h2>
             <span className="sub">
               {page.kind === 'overview' ?
-              'All panels below cascade · clicking a chart also filters' :
-              `Scoped to ${page.kind === 'cluster' ? page.cluster : shortSector(page.sector!)} · additional filters cascade to the panels below`}
+              'Click to filter the data below' :
+              `Viewing ${page.kind === 'cluster' ? page.cluster : shortSector(page.sector!)} — use filters to narrow further`}
             </span>
           </div>
           <FilterRail items={pageItems} filters={filters} setFilters={setFilters} allUnits={allUnits} />
