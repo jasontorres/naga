@@ -1,5 +1,0 @@
-name = "naga"
-pages_build_output_dir = "dist"
-
-[placement]
-mode = "smart"
