@@ -314,7 +314,7 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
                 fl={fl} content={c} rollup={r} reversed={reversed}
                 color={FINISH_LINE_COLORS[fl]}
                 index={i}
-                onClick={() => setPageId('cluster:' + fl)} />
+                onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('cluster:' + fl); }} />
             );
           })}
         </div>
@@ -334,10 +334,10 @@ export function Landing({ items, rollupAll, rollupClean, setPageId }: LandingPro
             and the 22 rows where the source spreadsheet reported outlier values we still need to reconcile.
           </p>
           <div className="L-digin-cta">
-            <button className="btn primary large" onClick={() => setPageId('overview')}>
+            <button className="btn primary large" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('overview'); }}>
               Open the full dashboard →
             </button>
-            <button className="btn large" onClick={() => setPageId('cluster:Inclusive and Thriving Economy')}>
+            <button className="btn large" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); setPageId('cluster:Inclusive and Thriving Economy'); }}>
               Browse by cluster
             </button>
           </div>

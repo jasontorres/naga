@@ -435,6 +435,7 @@ html, body {
   border: 1px solid var(--rule);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
+  padding: 20px 22px;
 }
 
 .card.soft {
@@ -1207,6 +1208,7 @@ table.line-items tbody tr.flagged td:first-child { border-left: 3px solid var(--
 .overlays .span-2 { grid-column: span 2; }
 .overlays > .card {
   overflow: hidden;
+  padding: 20px 22px;
 }
 @media (max-width: 1100px) {
   .overlays { grid-template-columns: 1fr; }
