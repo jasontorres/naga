@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "types": ["node"],
+    "composite": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext"
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "include": ["scripts/**/*"]
+}

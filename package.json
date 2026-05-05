@@ -6,16 +6,22 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "rebuild-data": "node --loader ts-node/esm scripts/rebuild-data.ts"
   },
   "dependencies": {
+    "jsonpath": "^1.3.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@types/node": "^25.6.0",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "dotenv": "^17.4.2",
+    "fishery": "^2.4.0",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.3",
     "vite": "^6.3.4"
   }
