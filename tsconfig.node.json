@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "types": ["node"],
+    "lib": ["ES2023"],
     "composite": true,
     "module": "nodenext",
     "moduleResolution": "nodenext",
