@@ -15,25 +15,25 @@ export type Cluster = {
 };
 
 export type Agency = {
-  id: string;
+  id: number;
   name: string;
   year: number;
-  cluster_id: string;
+  cluster_id: number;
   abbreviation: string;
 };
 
 export type Program = {
-  id: string;
+  id: number;
   name: string;
   implementation_start: string;
   implementation_end: string;
   aip_reference_code: string;
-  agency_id: string;
+  agency_id: number;
 };
 
 export type Amount = {
-  id: string;
+  id: number;
   category: string;
   amount: number;
-  program_id: string;
+  program_id: number;
 };

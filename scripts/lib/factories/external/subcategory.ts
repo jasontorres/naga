@@ -5,6 +5,7 @@ import type {
   Amount,
 } from "../../types/external.js";
 import { programFactory } from "./program.js";
+import { sumRollups } from "../../util/calc.js";
 
 type SubcategoryTransientParams = {
   amounts: Amount[];
@@ -19,8 +20,9 @@ export const subcategoryFactory = Factory.define<
   Subcategory,
   SubcategoryParams
 >(({ transientParams }) => {
-  const fake: Amount = transientParams!.amounts![1];
-  const amounts: Amount[] = [fake];
+  const amounts: Amount[] = transientParams.amounts
+    ? transientParams.amounts
+    : [];
   const externalPrograms = transientParams.programs || [];
 
   const programs: Program[] = [];
@@ -32,9 +34,13 @@ export const subcategoryFactory = Factory.define<
     programs.push(program);
   }
 
-  // NOTE: Hard-coding Subcategory
+  const programRollups = programs.map((program) => program.rollup);
+  const subcategoryRollups = sumRollups(programRollups);
+
+  // NOTE: Hard-coding Operations; but aip2026.json has "Operations", "General Administration Support", "Support to Operations", etc.
   return {
-    name: "Subcategory",
+    name: "Operations",
     programs,
+    rollup: subcategoryRollups,
   };
 });

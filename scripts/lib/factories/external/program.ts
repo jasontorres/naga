@@ -1,10 +1,11 @@
 import { Factory } from "fishery";
-import type { Program } from "../../types/internal.js";
+import type { Program, Rollup } from "../../types/internal.js";
 import type {
   Program as ProgramExternal,
   Amount,
 } from "../../types/external.js";
 import { amountToItemFactory } from "./amountToItem.js";
+import { toRollup } from "../../util/calc.js";
 
 type ProgramExternalToProgramTransientParams = {
   amounts: Amount[];
@@ -44,9 +45,12 @@ export const programFactory = Factory.define<
     }
   }
 
+  const rollup = toRollup(ps, mooe, co);
+
   // NOTE: There is only one item per program and it contains all allocations, personal services, maintenance, capital outlay, etc.
   return {
     name: params.name,
     items: [amountToItemFactory.params({ ps, co, mooe }).build()],
+    rollup,
   };
 });

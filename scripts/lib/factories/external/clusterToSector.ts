@@ -1,5 +1,4 @@
 import { Factory } from "fishery";
-import { rollupFactory } from "../index.js";
 import type { Unit, Sector, Rollup } from "../../types/internal.js";
 import type {
   Cluster,
@@ -8,7 +7,7 @@ import type {
   Amount,
 } from "../../types/external.js";
 import { agencyToUnitFactory } from "./agencyToUnit.js";
-import { EMPTY_ROLLUP } from "../../temp-data/index.js";
+import { sumRollups } from "../../util/calc.js";
 
 type ClusterToSectorTransientParams = {
   agencies: Agency[];
@@ -19,7 +18,6 @@ type ClusterToSectorTransientParams = {
 type ClusterToSectorParams = {
   id: number;
   name: string;
-  rollup: Rollup;
 };
 
 export const clusterToSectorFactory = Factory.define<
@@ -31,22 +29,23 @@ export const clusterToSectorFactory = Factory.define<
   const agencies = transientParams.agencies ?? [];
   const programs = transientParams.programs;
   const amounts = transientParams.amounts;
-  // NOTE: hard-code these for now, this should be provided by the database
-  const unitRollup: Rollup = rollupFactory.params(EMPTY_ROLLUP).build();
 
   const units: Unit[] = [];
   for (const agency of agencies) {
     const unit = agencyToUnitFactory
-      .params({ name: agency.name, rollup: unitRollup })
+      .params({ name: agency.name })
       .transient({ ...agency, programs, amounts })
       .build();
     units.push(unit);
   }
 
+  const unitRollups = units.map((unit) => unit.rollup);
+  const sectorRollups = sumRollups(unitRollups);
+
   return {
     id: params.id,
     name: params.name,
     units,
-    rollup: params.rollup,
+    rollup: sectorRollups,
   };
 });

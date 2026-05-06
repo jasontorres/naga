@@ -11,6 +11,8 @@ import {
 import { legacyAIPMetadata, EMPTY_ROLLUP } from "./lib/temp-data/index.js";
 import { externalPromises } from "./lib/api/external/index.js";
 import { buildSectorListFromClusterIds } from "./lib/factories/index.js";
+import { sumRollups } from "./lib/util/calc.js";
+import { Rollup } from "./lib/types/internal.js";
 
 const main = async () => {
   const metadata = metadataFactory.params(legacyAIPMetadata).build();
@@ -41,6 +43,10 @@ const main = async () => {
     amounts,
   ); // economic
 
+  const economicSectorRollups = economicSectorList.map(
+    (sector) => sector.rollup,
+  );
+
   const enviInfraHousingClusterList = await buildSectorListFromClusterIds(
     "Environment/Infrastructure/Housing",
     [7],
@@ -48,6 +54,10 @@ const main = async () => {
     programs,
     amounts,
   ); // envi_infra_urban_housing
+
+  const enviInfraHousingRollups = enviInfraHousingClusterList.map(
+    (sector) => sector.rollup,
+  );
 
   const generalPublicServicesClusterList = await buildSectorListFromClusterIds(
     "General Public Services",
@@ -57,6 +67,10 @@ const main = async () => {
     amounts,
   ); // education, governance, healthy_naguenos
 
+  const generalPublicServicesRollups = generalPublicServicesClusterList.map(
+    (sector) => sector.rollup,
+  );
+
   const socialSectorClusterIds = await buildSectorListFromClusterIds(
     "Social",
     [1, 2, 4],
@@ -65,6 +79,10 @@ const main = async () => {
     amounts,
   ); // safe_secure_humane, social_protection_inclusion, culture_arts_heritage
 
+  const socialRollups = generalPublicServicesClusterList.map(
+    (sector) => sector.rollup,
+  );
+
   const allSectors = [
     ...economicSectorList,
     ...enviInfraHousingClusterList,
@@ -72,10 +90,19 @@ const main = async () => {
     ...socialSectorClusterIds,
   ];
 
+  const allSectorRollups: Rollup[] = [
+    ...economicSectorRollups,
+    ...enviInfraHousingRollups,
+    ...generalPublicServicesRollups,
+    ...socialRollups,
+  ];
+
+  const pageDataRollup = sumRollups(allSectorRollups);
+
   const data = pageDataFactory
     .params({
       metadata,
-      rollup,
+      rollup: pageDataRollup,
       rollup_clean_excluding_outliers: rollupCleanExcludingOutliers,
       data_quality: dataQuality,
       sectors: allSectors,

@@ -6,6 +6,7 @@ import type {
   Amount,
 } from "../../types/external.js";
 import { subcategoryFactory } from "./subcategory.js";
+import { sumRollups } from "../../util/calc.js";
 
 type AgencyToUnitTransientParams = {
   programs: ProgramExternal[];
@@ -14,7 +15,6 @@ type AgencyToUnitTransientParams = {
 
 type AgencyToUnitParams = {
   name: string;
-  rollup: Rollup;
 };
 
 export const agencyToUnitFactory = Factory.define<
@@ -30,9 +30,14 @@ export const agencyToUnitFactory = Factory.define<
     subcategoryFactory.transient({ programs, amounts }).build(),
   ];
 
+  const subcategoryRollups = subcategories.map(
+    (subcategory) => subcategory.rollup,
+  );
+  const unitRollups = sumRollups(subcategoryRollups);
+
   return {
     name: params.name,
-    rollup: params.rollup,
+    rollup: unitRollups,
     subcategories,
   };
 });

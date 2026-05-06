@@ -10,21 +10,25 @@ export type Item = {
 export type Program = {
   name: string;
   items: Item[];
+  rollup: Rollup;
 };
 
 export type Subcategory = {
   name: string;
   programs: Program[];
+  rollup: Rollup;
 };
 
 export type Unit = {
   name: string;
   subcategories: Subcategory[];
+  rollup: Rollup;
 };
 
 export type Sector = {
   name?: string;
   units: Unit[];
+  rollup: Rollup;
 };
 
 export type PageData = {

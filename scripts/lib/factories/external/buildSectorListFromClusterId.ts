@@ -4,9 +4,6 @@ import type {
   Amount,
 } from "../../types/external.js";
 import { clusterToSectorFactory } from "./clusterToSector.js";
-import { rollupFactory } from "../internal/rollup.js";
-import type { Rollup } from "../../types/internal.js";
-import { EMPTY_ROLLUP } from "../../temp-data/index.js";
 
 export const buildSectorListFromClusterIds = async (
   clusterName: string,
@@ -19,7 +16,7 @@ export const buildSectorListFromClusterIds = async (
 
   for (const clusterId of clusterIds) {
     const clusterAgencies: Agency[] = agencies.filter(
-      (agency) => agency.cluster_id === clusterId.toString(),
+      (agency) => agency.cluster_id === clusterId,
     );
     const clusterAgenciesIds = clusterAgencies.map(({ id }) => id);
     const clusterPrograms: ProgramExternal[] = programs.filter((program) =>
@@ -30,14 +27,10 @@ export const buildSectorListFromClusterIds = async (
       clusterProgramsIds.includes(amount.program_id),
     );
 
-    // TODO: implement sector rollup
-    const emptyRollup: Rollup = rollupFactory.params(EMPTY_ROLLUP).build();
-
     const sector = await clusterToSectorFactory
       .params({
         id: clusterId,
         name: clusterName,
-        rollup: emptyRollup,
       })
       .transient({
         agencies: clusterAgencies,
